@@ -15,11 +15,18 @@ This patch *should* work with other patches and modifications.
 * **Created By:** Robert Jordan
 * **Version:** 1.0.0.0
 * **Language:** C#, WPF
+* **Built For:** Terraria 1.3.5.3
 
 ## Requirements for Running
 * .NET Framwork 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
 * Windows 7 or later
 * Terraria for PC
+
+## Requirements for Source Code
+* Mono.Cecil | [Nuget Package](https://www.nuget.org/packages/Mono.Cecil/)
+* Newtonsoft.Json | [Nuget Package](https://www.nuget.org/packages/Newtonsoft.Json/)
+* XNA 4.0 Refresh | [VS 2015 Installer](https://mxa.codeplex.com/releases/view/618279)
+* Terraria.exe *(Place in solution folder)*
 
 ## How to Use
 
