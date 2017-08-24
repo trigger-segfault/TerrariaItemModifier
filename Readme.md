@@ -4,6 +4,8 @@ I didn't like how TerrariaPatcher's ItemConfig plugin worked with the horribly l
 
 This patch *should* work with other patches and modifications.
 
+Terraria Item Modifier may optionally switch to ini files in the future.
+
 **Warning:** You should always back up your save data before applying any sort of modification to Terraria.
 
 ![Window Preview](http://i.imgur.com/hAH5Csb.png)
