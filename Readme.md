@@ -1,6 +1,6 @@
 # Terraria Item Modifier ![AppIcon](http://i.imgur.com/Gs2AaQD.png)
 
-Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
+I didn't like how TerrariaPatcher's ItemConfig plugin worked with the horribly lag and limited options, so I write my own. Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
 
 This patch *should* work with other patches and modifications.
 
