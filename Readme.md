@@ -1,10 +1,12 @@
 # Terraria Item Modifier ![AppIcon](http://i.imgur.com/Gs2AaQD.png)
 
-![Window Preview](http://i.imgur.com/hAH5Csb.png)
-
 Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
 
 This patch *should* work with other patches and modifications.
+
+**Warning:** You should always back up your save data before applying any sort of modification to Terraria.
+
+![Window Preview](http://i.imgur.com/hAH5Csb.png)
 
 ### [Wiki](https://github.com/trigger-death/TerrariaItemModifier/wiki) | [Credits](https://github.com/trigger-death/TerrariaItemModifier/wiki/Credits) | [Image Album](http://imgur.com/a/tRSoe)
 
