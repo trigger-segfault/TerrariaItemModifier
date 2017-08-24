@@ -15,7 +15,7 @@ This patch *should* work with other patches and modifications.
 * **Created By:** Robert Jordan
 * **Version:** 1.0.0.0
 * **Language:** C#, WPF
-* **Built For:** Terraria 1.3.5.3
+* **Built For:** Terraria 1.3.5.3 <sup>(Should run with other versions)</sup>
 
 ## Requirements for Running
 * .NET Framwork 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
