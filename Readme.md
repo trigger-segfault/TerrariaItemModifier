@@ -1,6 +1,6 @@
 # Terraria Item Modifier ![AppIcon](http://i.imgur.com/Gs2AaQD.png)
 
-I didn't like how TerrariaPatcher's ItemConfig plugin worked with the horribly lag and limited options, so I wrote my own. Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
+Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
 
 This patch *should* work with other patches and modifications.
 
@@ -30,10 +30,11 @@ Terraria Item Modifier may optionally switch to ini files in the future.
 * Mono.Cecil | [Nuget Package](https://www.nuget.org/packages/Mono.Cecil/)
 * Newtonsoft.Json | [Nuget Package](https://www.nuget.org/packages/Newtonsoft.Json/)
 * XNA 4.0 Refresh | [VS 2015 Installer](https://mxa.codeplex.com/releases/view/618279)
-* Terraria.exe *(Place in solution folder)*
+* Terraria.exe | *Place in solution folder*
 
-## How to Use
+## Use Guide
+Follow these instructions to get the most out of Terraria Item Modifier.
 
-* **[Variable List](https://github.com/trigger-death/TerrariaItemModifier/wiki/Variable-List)**
-* **[Example XML](https://github.com/trigger-death/TerrariaItemModifier/wiki/Example-XML)**
-* **[Error Logging](https://github.com/trigger-death/TerrariaItemModifier/wiki/Error-Logging)**
+1. **[How to Patch Terraria](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Patch-Terraria)**
+2. **[How to Edit XML](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Edit-XML)**
+3. **[How to Modify Items](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Modify-Items)**
