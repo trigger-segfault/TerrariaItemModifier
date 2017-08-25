@@ -508,7 +508,8 @@ namespace TerrariaItemModifier {
 			/**<summary>SpawnNPCID</summary>*/
 			Modify(makeNPC, ref item.makeNPC);
 			// Make the NPC spawnable
-			Main.npcCatchable[item.type] = true;
+			if (makeNPC.HasValue && makeNPC.Value != 0)
+				Main.npcCatchable[makeNPC.Value] = true;
 			/**<summary>PickaxePower</summary>*/
 			Modify(pick, ref item.pick);
 			/**<summary>PlacedTileID</summary>*/
