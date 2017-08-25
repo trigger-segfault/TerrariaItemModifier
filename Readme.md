@@ -38,3 +38,4 @@ Follow these instructions to get the most out of Terraria Item Modifier.
 1. **[How to Patch Terraria](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Patch-Terraria)**
 2. **[How to Edit XML](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Edit-XML)**
 3. **[How to Modify Items](https://github.com/trigger-death/TerrariaItemModifier/wiki/How-to-Modify-Items)**
+4. **[Error Checking](https://github.com/trigger-death/TerrariaItemModifier/wiki/Error-Checking)**
