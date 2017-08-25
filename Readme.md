@@ -12,7 +12,7 @@ Terraria Item Modifier may optionally switch to ini files in the future.
 
 ### [Wiki](https://github.com/trigger-death/TerrariaItemModifier/wiki) | [Credits](https://github.com/trigger-death/TerrariaItemModifier/wiki/Credits) | [Image Album](http://imgur.com/a/tRSoe)
 
-### [![Get Terraria Item Modifier](http://i.imgur.com/Y5uY8vM.png)](https://github.com/trigger-death/TerrariaItemModifier/releases/tag/1.0.1.0)
+### [![Get Terraria Item Modifier](http://i.imgur.com/Y5uY8vM.png)](https://github.com/trigger-death/TerrariaItemModifier/releases/tag/1.0.1.1)
 
 ## About
 
