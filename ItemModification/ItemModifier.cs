@@ -118,11 +118,13 @@ namespace TerrariaItemModifier {
 				doc.AppendChild(mods);
 
 				mods.AppendChild(doc.CreateComment("Example Modification: Magical Harp"));
-				mods.AppendChild(doc.CreateComment("<Item ID=\"494\">\n" +
-					"    <AutoReuse>False</AutoReuse>\n" +
-					"    <ManaUse>0</ManaUse>\n" +
-					"    <UseAnimation>3</UseAnimation>\n" +
-					"    <UseTime>3</UseTime>\n" +
+				mods.AppendChild(doc.CreateComment("<Item ID=\"494\">\r\n" +
+					"    <Name>Loud &amp; Obnoxious Harp</Name>\r\n" +
+					"    <Tooltip>'Turn that racket down you darn kids!'</Tooltip>\r\n" +
+					"    <AutoReuse>False</AutoReuse>\r\n" +
+					"    <ManaUse>0</ManaUse>\r\n" +
+					"    <UseAnimation>3</UseAnimation>\r\n" +
+					"    <UseTime>3</UseTime>\r\n" +
 					"  </Item>"
 				));
 				doc.Save(ConfigPath);

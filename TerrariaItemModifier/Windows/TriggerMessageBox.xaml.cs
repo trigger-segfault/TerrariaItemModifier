@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -12,7 +13,7 @@ namespace TerrariaItemModifier.Windows {
 		Question,
 		/**<summary>A yellow /!\ icon.</summary>*/
 		Warning,
-		/**<summary>A ref (!) icon.</summary>*/
+		/**<summary>A red (!) icon.</summary>*/
 		Error
 	}
 
@@ -40,18 +41,22 @@ namespace TerrariaItemModifier.Windows {
 
 			#region Load Message Icons
 			switch (icon) {
-				case MessageIcon.Info:
-					this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/InfoIcon.png"));
-					break;
-				case MessageIcon.Question:
-					this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/QuestionIcon.png"));
-					break;
-				case MessageIcon.Warning:
-					this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/WarningIcon.png"));
-					break;
-				case MessageIcon.Error:
-					this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/ErrorIcon.png"));
-					break;
+			case MessageIcon.Info:
+				SystemSounds.Asterisk.Play();
+				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/InfoIcon.png"));
+				break;
+			case MessageIcon.Question:
+				SystemSounds.Asterisk.Play();
+				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/QuestionIcon.png"));
+				break;
+			case MessageIcon.Warning:
+				SystemSounds.Exclamation.Play();
+				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/WarningIcon.png"));
+				break;
+			case MessageIcon.Error:
+				SystemSounds.Hand.Play();
+				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/ErrorIcon.png"));
+				break;
 			}
 			#endregion
 

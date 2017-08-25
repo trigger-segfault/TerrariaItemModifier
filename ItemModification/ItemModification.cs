@@ -38,10 +38,6 @@ namespace TerrariaItemModifier {
 			Read(node, "IsDD2Summon", ref DD2Summon);
 			/**<summary>IsAccessory</summary>*/
 			Read(node, "IsAccessory", ref accessory);
-			/**<summary>IsVanity</summary>*/
-			Read(node, "IsVanity", ref vanity);
-			/**<summary>IsPotion</summary>*/
-			Read(node, "IsPotion", ref potion);
 
 			#endregion
 			//--------------------------------
@@ -71,8 +67,6 @@ namespace TerrariaItemModifier {
 			Read(node, "ManaIncrease", ref manaIncrease);
 			/**<summary>ManaUse</summary>*/
 			Read(node, "ManaUse", ref mana);
-			/**<summary>NotAmmo</summary>*/
-			Read(node, "NotAmmo", ref notAmmo);
 			/**<summary>ProjectileID</summary>*/
 			Read(node, "ProjectileID", ref shoot);
 			/**<summary>ProjectileSpeed</summary>*/
@@ -92,8 +86,14 @@ namespace TerrariaItemModifier {
 			Read(node, "Rarity", ref rare);
 			/**<summary>IsExpert</summary>*/
 			Read(node, "IsExpert", ref expert);
+			/**<summary>IsMaterial</summary>*/
+			Read(node, "IsMaterial", ref material);
 			/**<summary>IsQuestItem</summary>*/
 			Read(node, "IsQuestItem", ref questItem);
+			/**<summary>IsVanity</summary>*/
+			Read(node, "IsVanity", ref vanity);
+			/**<summary>NotAmmo</summary>*/
+			Read(node, "NotAmmo", ref notAmmo);
 			/**<summary>Value</summary>*/
 			Read(node, "Value", ref value);
 
@@ -114,14 +114,16 @@ namespace TerrariaItemModifier {
 
 			/**<summary>IsConsumable</summary>*/
 			Read(node, "IsConsumable", ref consumable);
-			/**<summary>IsUniqueItem</summary>*/
-			Read(node, "IsUniqueItem", ref uniqueStack);
 			/**<summary>IsExpertOnly</summary>*/
 			Read(node, "IsExpertOnly", ref expertOnly);
+			/**<summary>IsHealingPotion</summary>*/
+			Read(node, "IsHealingPotion", ref potion);
+			/**<summary>IsUniqueItem</summary>*/
+			Read(node, "IsUniqueItem", ref uniqueStack);
 			/**<summary>MaxStackSize</summary>*/
 			Read(node, "MaxStackSize", ref maxStack);
-			/**<summary>IsUnusableUnderwater</summary>*/
-			Read(node, "IsUnusableUnderwater", ref noWet);
+			/**<summary>UnusableUnderwater</summary>*/
+			Read(node, "UnusableUnderwater", ref noWet);
 
 			#endregion
 			//--------------------------------
@@ -137,6 +139,8 @@ namespace TerrariaItemModifier {
 			Read(node, "HammerPower", ref hammer);
 			/**<summary>IsHoldableLight</summary>*/
 			Read(node, "IsHoldableLight", ref flame);
+			/**<summary>IsWiring</summary>*/
+			Read(node, "IsWiring", ref mech);
 			/**<summary>SpawnNPCID</summary>*/
 			Read(node, "SpawnNPCID", ref makeNPC);
 			/**<summary>PickaxePower</summary>*/
@@ -210,10 +214,6 @@ namespace TerrariaItemModifier {
 			Write(doc, item, "IsDD2Summon", DD2Summon);
 			/**<summary>IsAccessory</summary>*/
 			Write(doc, item, "IsAccessory", accessory);
-			/**<summary>IsVanity</summary>*/
-			Write(doc, item, "IsVanity", vanity);
-			/**<summary>IsPotion</summary>*/
-			Write(doc, item, "IsPotion", potion);
 
 			#endregion
 			//--------------------------------
@@ -243,8 +243,6 @@ namespace TerrariaItemModifier {
 			Write(doc, item, "ManaIncrease", manaIncrease);
 			/**<summary>ManaUse</summary>*/
 			Write(doc, item, "ManaUse", mana);
-			/**<summary>NotAmmo</summary>*/
-			Write(doc, item, "NotAmmo", notAmmo);
 			/**<summary>ProjectileID</summary>*/
 			Write(doc, item, "ProjectileID", shoot);
 			/**<summary>ProjectileSpeed</summary>*/
@@ -264,8 +262,14 @@ namespace TerrariaItemModifier {
 			Write(doc, item, "Rarity", rare);
 			/**<summary>IsExpert</summary>*/
 			Write(doc, item, "IsExpert", expert);
+			/**<summary>IsMaterial</summary>*/
+			Write(doc, item, "IsMaterial", material);
 			/**<summary>IsQuestItem</summary>*/
 			Write(doc, item, "IsQuestItem", questItem);
+			/**<summary>IsVanity</summary>*/
+			Write(doc, item, "IsVanity", vanity);
+			/**<summary>NotAmmo</summary>*/
+			Write(doc, item, "NotAmmo", notAmmo);
 			/**<summary>Value</summary>*/
 			Write(doc, item, "Value", value);
 
@@ -286,10 +290,12 @@ namespace TerrariaItemModifier {
 
 			/**<summary>IsConsumable</summary>*/
 			Write(doc, item, "IsConsumable", consumable);
-			/**<summary>IsUniqueItem</summary>*/
-			Write(doc, item, "IsUniqueItem", uniqueStack);
 			/**<summary>IsExpertOnly</summary>*/
 			Write(doc, item, "IsExpertOnly", expertOnly);
+			/**<summary>IsHealingPotion</summary>*/
+			Write(doc, item, "IsHealingPotion", potion);
+			/**<summary>IsUniqueItem</summary>*/
+			Write(doc, item, "IsUniqueItem", uniqueStack);
 			/**<summary>MaxStackSize</summary>*/
 			Write(doc, item, "MaxStackSize", maxStack);
 			/**<summary>UnusableUnderwater</summary>*/
@@ -309,6 +315,8 @@ namespace TerrariaItemModifier {
 			Write(doc, item, "HammerPower", hammer);
 			/**<summary>IsHoldableLight</summary>*/
 			Write(doc, item, "IsHoldableLight", flame);
+			/**<summary>IsWiring</summary>*/
+			Write(doc, item, "IsWiring", mech);
 			/**<summary>SpawnNPCID</summary>*/
 			Write(doc, item, "SpawnNPCID", makeNPC);
 			/**<summary>PickaxePower</summary>*/
@@ -387,10 +395,6 @@ namespace TerrariaItemModifier {
 			Modify(DD2Summon, ref item.DD2Summon);
 			/**<summary>IsAccessory</summary>*/
 			Modify(accessory, ref item.accessory);
-			/**<summary>IsVanity</summary>*/
-			Modify(vanity, ref item.vanity);
-			/**<summary>IsPotion</summary>*/
-			Modify(potion, ref item.potion);
 
 			#endregion
 			//--------------------------------
@@ -420,8 +424,6 @@ namespace TerrariaItemModifier {
 			Modify(manaIncrease, ref item.manaIncrease);
 			/**<summary>ManaUse</summary>*/
 			Modify(mana, ref item.mana);
-			/**<summary>NotAmmo</summary>*/
-			Modify(notAmmo, ref item.notAmmo);
 			/**<summary>ProjectileID</summary>*/
 			Modify(shoot, ref item.shoot);
 			/**<summary>ProjectileSpeed</summary>*/
@@ -436,15 +438,23 @@ namespace TerrariaItemModifier {
 			/**<summary>Name</summary>*/
 			//Write(Name, ref item.name);
 			// Set on ItemModifier.LoadModifications()
+			// Modified in ItemModifier
 			/**<summary>Tooltip</summary>*/
 			//Write(Tooltip, ref item.ToolTip);
 			// Set on ItemModifier.LoadModifications()
+			// Modified in ItemModifier
 			/**<summary>Rarity</summary>*/
 			Modify(rare, ref item.rare);
 			/**<summary>IsExpert</summary>*/
 			Modify(expert, ref item.expert);
+			/**<summary>IsMaterial</summary>*/
+			Modify(material, ref item.material);
 			/**<summary>IsQuestItem</summary>*/
 			Modify(questItem, ref item.questItem);
+			/**<summary>IsVanity</summary>*/
+			Modify(vanity, ref item.vanity);
+			/**<summary>NotAmmo</summary>*/
+			Modify(notAmmo, ref item.notAmmo);
 			/**<summary>Value</summary>*/
 			Modify(value, ref item.value);
 
@@ -468,10 +478,12 @@ namespace TerrariaItemModifier {
 
 			/**<summary>IsConsumable</summary>*/
 			Modify(consumable, ref item.consumable);
-			/**<summary>IsUniqueItem</summary>*/
-			Modify(uniqueStack, ref item.uniqueStack);
 			/**<summary>IsExpertOnly</summary>*/
 			Modify(expertOnly, ref item.expertOnly);
+			/**<summary>IsHealingPotion</summary>*/
+			Modify(potion, ref item.potion);
+			/**<summary>IsUniqueItem</summary>*/
+			Modify(uniqueStack, ref item.uniqueStack);
 			/**<summary>MaxStackSize</summary>*/
 			Modify(maxStack, ref item.maxStack);
 			/**<summary>UnusableUnderwater</summary>*/
@@ -491,8 +503,12 @@ namespace TerrariaItemModifier {
 			Modify(hammer, ref item.hammer);
 			/**<summary>IsHoldableLight</summary>*/
 			Modify(flame, ref item.flame);
+			/**<summary>IsWiring</summary>*/
+			Modify(mech, ref item.mech);
 			/**<summary>SpawnNPCID</summary>*/
 			Modify(makeNPC, ref item.makeNPC);
+			// Make the NPC spawnable
+			Main.npcCatchable[item.type] = true;
 			/**<summary>PickaxePower</summary>*/
 			Modify(pick, ref item.pick);
 			/**<summary>PlacedTileID</summary>*/

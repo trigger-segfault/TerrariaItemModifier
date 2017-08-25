@@ -19,9 +19,14 @@
                 </LinearGradientBrush>
             </Menu.Background>
             <MenuItem Header="File">
-                <MenuItem Header="Open Terraria Folder" Click="OnOpenTerrariaFolder">
+                <MenuItem Header="Launch Terraria" Click="OnLaunchTerraria">
                     <MenuItem.Icon>
                         <Image Source="Resources/Icons/TerrariaIcon.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open Terraria Folder" Click="OnOpenTerrariaFolder">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/Icons/Browse.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>

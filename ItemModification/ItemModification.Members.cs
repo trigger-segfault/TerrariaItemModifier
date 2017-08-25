@@ -35,10 +35,6 @@ namespace TerrariaItemModifier {
 		public bool? DD2Summon;
 		/**<summary>IsAccessory</summary>*/
 		public bool? accessory;
-		/**<summary>IsVanity</summary>*/
-		public bool? vanity;
-		/**<summary>IsPotion</summary>*/
-		public bool? potion;
 
 		#endregion
 		//--------------------------------
@@ -68,8 +64,6 @@ namespace TerrariaItemModifier {
 		public int? manaIncrease;
 		/**<summary>ManaUse</summary>*/
 		public int? mana;
-		/**<summary>NotAmmo</summary>*/
-		public bool? notAmmo;
 		/**<summary>ProjectileID</summary>*/
 		public int? shoot;
 		/**<summary>ProjectileSpeed</summary>*/
@@ -89,8 +83,14 @@ namespace TerrariaItemModifier {
 		public int? rare;
 		/**<summary>IsExpert</summary>*/
 		public bool? expert;
+		/**<summary>IsMaterial</summary>*/
+		public bool? material;
 		/**<summary>IsQuestItem</summary>*/
 		public bool? questItem;
+		/**<summary>IsVanity</summary>*/
+		public bool? vanity;
+		/**<summary>NotAmmo</summary>*/
+		public bool? notAmmo;
 		/**<summary>Value</summary>*/
 		public int? value;
 
@@ -111,13 +111,15 @@ namespace TerrariaItemModifier {
 
 		/**<summary>IsConsumable</summary>*/
 		public bool? consumable;
+		/**<summary>IsExpertOnly</summary>*/
+		public bool? expertOnly;
+		/**<summary>IsHealingPotion</summary>*/
+		public bool? potion;
 		/**<summary>IsUniqueItem</summary>*/
 		public bool? uniqueStack;
 		/**<summary>MaxStackSize</summary>*/
 		public int? maxStack;
-		/**<summary>IsExpertOnly</summary>*/
-		public bool? expertOnly;
-		/**<summary>IsUnusableUnderwater</summary>*/
+		/**<summary>UnusableUnderwater</summary>*/
 		public bool? noWet;
 
 		#endregion
@@ -134,6 +136,8 @@ namespace TerrariaItemModifier {
 		public int? hammer;
 		/**<summary>IsHoldableLight</summary>*/
 		public bool? flame;
+		/**<summary>IsWiring</summary>*/
+		public bool? mech;
 		/**<summary>SpawnNPCID</summary>*/
 		public short? makeNPC;
 		/**<summary>PickaxePower</summary>*/
