@@ -17,7 +17,7 @@ Terraria Item Modifier may optionally switch to ini files in the future.
 ## About
 
 * **Created By:** Robert Jordan
-* **Version:** 1.0.1.0
+* **Version:** 1.0.1.1 (Hotfix)
 * **Language:** C#, WPF
 * **Built For:** Terraria 1.3.5.3 <sup>(Should run with other versions)</sup>
 
