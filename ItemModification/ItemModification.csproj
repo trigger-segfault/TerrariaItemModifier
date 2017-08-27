@@ -51,10 +51,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorLogger.cs" />
     <Compile Include="ItemModification.cs" />
-    <Compile Include="ItemModification.Members.cs" />
+    <Compile Include="ItemModification.Variables.cs" />
     <Compile Include="ItemModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Variables.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

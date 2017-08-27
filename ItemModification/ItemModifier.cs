@@ -13,8 +13,47 @@ using Terraria.Localization;
 using Terraria.UI;
 
 namespace TerrariaItemModifier {
+
+
 	/**<summary>The class that handles changes to items.</summary>*/
 	public static class ItemModifier {
+		//=========== CLASSES ============
+		#region Classes
+
+		/**<summary>Aquire this all ahead of time to reduce reflection slowdown.</summary>*/
+		private static class TerrariaReflection {
+			//=========== MEMBERS ============
+			#region Members
+
+			public static ConstructorInfo ctor_ItemToolTip;
+			public static ConstructorInfo ctor_LocalizedText;
+
+			public static FieldInfo _itemNameCache_Lang;
+			public static FieldInfo _itemTooltipCache_Lang;
+			public static FieldInfo _text_ItemTooltip;
+			public static FieldInfo _lastCulture_ItemTooltip;
+
+			#endregion
+			//========= CONSTRUCTORS =========
+			#region Constructors
+
+			/**<summary>Aquire all of the reflection infos ahead of time to reduce reflection slowdown.</summary>*/
+			static TerrariaReflection() {
+				ctor_ItemToolTip		 = typeof(ItemTooltip).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+				ctor_LocalizedText		 = typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+
+				_itemNameCache_Lang		 = typeof(Lang).GetField("_itemNameCache", BindingFlags.NonPublic | BindingFlags.Static);
+				_itemTooltipCache_Lang	 = typeof(Lang).GetField("_itemTooltipCache", BindingFlags.NonPublic | BindingFlags.Static);
+				_text_ItemTooltip		 = typeof(ItemTooltip).GetField("_text", BindingFlags.NonPublic | BindingFlags.Instance);
+				_lastCulture_ItemTooltip = typeof(ItemTooltip).GetField("_lastCulture", BindingFlags.NonPublic | BindingFlags.Instance);
+
+				// Hooray for reflection!
+			}
+
+			#endregion
+		}
+
+		#endregion
 		//========== CONSTANTS ===========
 		#region Constants
 
@@ -22,16 +61,14 @@ namespace TerrariaItemModifier {
 		public const string ConfigName = "ItemModifications.xml";
 		/**<summary>The path of the config file.</summary>*/
 		public static readonly string ConfigPath = Path.Combine(Environment.CurrentDirectory, ConfigName);
-		/**<summary>The path of the error log.</summary>*/
-		public static readonly string ErrorLogPath = Path.Combine(Environment.CurrentDirectory, "ItemModificationErrorLog.txt");
 
 		#endregion
 		//=========== MEMBERS ============
 		#region Members
 
 		/**<summary>The items to be modified.</summary>*/
-		public static Dictionary<int, ItemModification> ItemMods = new Dictionary<int, ItemModification>();
-
+		private static Dictionary<int, ItemModification> ItemMods = new Dictionary<int, ItemModification>();
+		
 		#endregion
 		//============ HOOKS =============
 		#region Hooks
@@ -43,11 +80,8 @@ namespace TerrariaItemModifier {
 
 				itemMod.ModifyItem(item);
 
-				// Set localizations
-				/*if (itemMod.name != null)
-					SetItemName(item.type, itemMod.name);
-				if (itemMod.tooltip != null)
-					SetItemTooltip(item.type, itemMod.tooltip);*/
+				if (ErrorLogger.IsOpen)
+					ErrorLogger.Close();
 			}
 		}
 		/**<summary>Called on Main.LoadPlayers to reload all of the modifications.</summary>*/
@@ -55,7 +89,7 @@ namespace TerrariaItemModifier {
 			if (File.Exists(ConfigPath))
 				LoadModifications();
 			else
-				SaveModifications();
+				SaveExampleModifications();
 		}
 
 		#endregion
@@ -65,6 +99,11 @@ namespace TerrariaItemModifier {
 		/**<summary>Loads or reloads the modifications xml doc.</summary>*/
 		private static void LoadModifications() {
 			try {
+				// Make NPCs releasable (catchable does not seem to affect catching NPCs with bug nets)
+				for (int i = 0; i < Main.npcCatchable.Length; i++) {
+					Main.npcCatchable[i] = true;
+				}
+
 				ItemMods.Clear();
 
 				XmlDocument doc = new XmlDocument();
@@ -78,35 +117,57 @@ namespace TerrariaItemModifier {
 					node = nodeList[i];
 
 					attribute = node.Attributes["ID"];
-					if (attribute != null && int.TryParse(attribute.InnerText, out type)) {
-						if (ItemMods.ContainsKey(type))
+					if (attribute != null) {
+						if (!int.TryParse(attribute.InnerText, out type)) {
+							if (!ErrorLogger.IsOpen)
+								ErrorLogger.Open();
+
+							ErrorLogger.WriteErrorHeader();
+							ErrorLogger.WriteLine("Error when reading XML.");
+							ErrorLogger.WriteLine("ItemID: " + attribute.InnerText + " could not be parsed.");
+							ErrorLogger.WriteLine();
 							continue;
-						ItemModification item = new ItemModification();
+						}
+						if (ItemMods.ContainsKey(type)) {
+							if (!ErrorLogger.IsOpen)
+								ErrorLogger.Open();
+
+							ErrorLogger.WriteErrorHeader();
+							ErrorLogger.WriteLine("Error when reading XML.");
+							ErrorLogger.WriteLine("ItemID: " + type.ToString() + " already exists.");
+							ErrorLogger.WriteLine();
+							continue;
+						}
+						ItemModification item = new ItemModification(type);
 						item.LoadXml(node);
 
-						// Set localizations
-						if (item.name != null)
-							SetItemName(type, item.name);
-						if (item.tooltip != null)
-							SetItemTooltip(type, item.tooltip);
+						if (item.VarList.ContainsKey("Name")) {
+							SetItemName(type, item.VarList["Name"].Value as string);
+						}
+						if (item.VarList.ContainsKey("Tooltip")) {
+							SetItemTooltip(type, item.VarList["Tooltip"].Value as string);
+						}
 
 						ItemMods.Add(type, item);
 					}
 				}
 			}
 			catch (Exception ex) {
-				StreamWriter writer = new StreamWriter(ErrorLogPath, true);
-				writer.WriteLine("--------------------------------");
-				writer.WriteLine("Time: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
-				writer.WriteLine("Message: " + ex.Message);
-				writer.WriteLine("ToString: " + ex.ToString());
-				writer.WriteLine();
-
-				writer.Close();
+				if (!ErrorLogger.IsOpen)
+					ErrorLogger.Open();
+				ErrorLogger.WriteErrorHeader();
+				ErrorLogger.WriteLine("Error when parsing XML.");
+				ErrorLogger.WriteLine("Exception: ");
+				ErrorLogger.WriteLine(ex.ToString());
+				ErrorLogger.WriteLine();
 			}
+
+			// Close the error log if needed
+			if (ErrorLogger.IsOpen)
+				ErrorLogger.Close();
 		}
 		/**<summary>Saves an example modifications xml doc.</summary>*/
-		private static void SaveModifications() {
+		private static void SaveExampleModifications() {
 			try {
 				XmlDocument doc = new XmlDocument();
 				doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -138,60 +199,33 @@ namespace TerrariaItemModifier {
 
 		/**<summary>Sets the name of an item.</summary>*/
 		private static void SetItemName(int type, string name) {
-			// Access Lang's private tooltip cache
-			FieldInfo field = typeof(Lang).GetField("_itemNameCache", BindingFlags.NonPublic | BindingFlags.Static);
-			LocalizedText[] _itemNameCache = (LocalizedText[])field.GetValue(null);
+			// Access Lang's item name cache
+			LocalizedText[] _itemNameCache = (LocalizedText[])TerrariaReflection._itemNameCache_Lang.GetValue(null);
 
-			// Get the name of the item
-			LocalizedText locText = _itemNameCache[ItemID.FromNetId((short)type)];
+			// Create a new LocalizedText
+			LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemName" + type.ToString(), name });
 
-			// Access Value's private setter and set the name
-			PropertyInfo property = typeof(LocalizedText).GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
-			property.SetValue(locText, name);
+			// Assign the new LocalizedText to Lang's item name cache
+			_itemNameCache[ItemID.FromNetId((short)type)] = locText;
 
 			// Hooray for reflection!
 		}
 		/**<summary>Sets the name of an item.</summary>*/
-		private static void SetItemTooltip(int type, string text) {
-			// Access Lang's private tooltip cache
-			FieldInfo field = typeof(Lang).GetField("_itemTooltipCache", BindingFlags.NonPublic | BindingFlags.Static);
-			ItemTooltip[] _itemTooltipCache = (ItemTooltip[])field.GetValue(null);
+		private static void SetItemTooltip(int type, string tooltip) {
+			// Access Lang's item tooltip cache
+			ItemTooltip[] _itemTooltipCache = (ItemTooltip[])TerrariaReflection._itemTooltipCache_Lang.GetValue(null);
 
-			// Get the tooltip of the item
-			//ItemTooltip itemTooltip = _itemTooltipCache[ItemID.FromNetId((short)type)];
-
-
-			ConstructorInfo ctor = typeof(ItemTooltip).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
-			ItemTooltip itemTooltip = (ItemTooltip)ctor.Invoke(new object[] {});
-			ctor = typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
-			LocalizedText locText = (LocalizedText)ctor.Invoke(new object[] { "ItemTooltip" + type.ToString(), text });
-			field = typeof(ItemTooltip).GetField("_text", BindingFlags.NonPublic | BindingFlags.Instance);
-			field.SetValue(itemTooltip, locText);
+			// Create a new ItemTooltip
+			ItemTooltip itemTooltip = (ItemTooltip)TerrariaReflection.ctor_ItemToolTip.Invoke(new object[] {});
+			// Create a new LocalizedText
+			LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemTooltip" + type.ToString(), tooltip });
 
 			// Set the text of the tooltip
-			/*field = typeof(ItemTooltip).GetField("_text", BindingFlags.NonPublic | BindingFlags.Instance);
-			LocalizedText locText = (LocalizedText)field.GetValue(itemTooltip);
-			if (locText == null) {
-				ctor = typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
-				locText = (LocalizedText)ctor.Invoke(new object[] { "ItemTooltip" + type.ToString(), text });
-				field.SetValue(itemTooltip, locText);
-				
-				locText = (LocalizedText)FormatterServices.GetUninitializedObject(typeof(LocalizedText));
-				field.SetValue(itemTooltip, locText);
-				field = typeof(LocalizedText).GetField("Key", BindingFlags.Public | BindingFlags.Instance);
-				field.SetValue(locText, "");
-				PropertyInfo property = typeof(LocalizedText).GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
-				property.SetValue(locText, text);
-			}
-			else {
-				PropertyInfo property = typeof(LocalizedText).GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
-				property.SetValue(locText, text);
-			}*/
-
+			TerrariaReflection._text_ItemTooltip.SetValue(itemTooltip, locText);
 			// Set it so that the tooltip will be revalidated the first time it's needed.
-			field = typeof(ItemTooltip).GetField("_lastCulture", BindingFlags.NonPublic | BindingFlags.Instance);
-			field.SetValue(itemTooltip, null);
+			TerrariaReflection._lastCulture_ItemTooltip.SetValue(itemTooltip, null);
 
+			// Assign the new ItemTooltip to Lang's item tooltip cache
 			_itemTooltipCache[ItemID.FromNetId((short)type)] = itemTooltip;
 
 			// Hooray for reflection!

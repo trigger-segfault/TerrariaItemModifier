@@ -31,8 +31,6 @@ namespace TerrariaItemModifier {
 		public bool? summon;
 		/**<summary>IsSentry</summary>*/
 		public bool? sentry;
-		/**<summary>IsDD2Summon</summary>*/
-		public bool? DD2Summon;
 		/**<summary>IsAccessory</summary>*/
 		public bool? accessory;
 
@@ -64,6 +62,8 @@ namespace TerrariaItemModifier {
 		public int? manaIncrease;
 		/**<summary>ManaUse</summary>*/
 		public int? mana;
+		/**<summary>NoSwingDamage</summary>*/
+		public bool? noMelee;
 		/**<summary>ProjectileID</summary>*/
 		public int? shoot;
 		/**<summary>ProjectileSpeed</summary>*/
@@ -111,6 +111,8 @@ namespace TerrariaItemModifier {
 
 		/**<summary>IsConsumable</summary>*/
 		public bool? consumable;
+		/**<summary>IsDD2Summon</summary>*/
+		public bool? DD2Summon;
 		/**<summary>IsExpertOnly</summary>*/
 		public bool? expertOnly;
 		/**<summary>IsHealingPotion</summary>*/
@@ -180,8 +182,6 @@ namespace TerrariaItemModifier {
 		public Color? color;
 		/**<summary>HoldStyle</summary>*/
 		public int? holdStyle;
-		/**<summary>NoSwingAnimation</summary>*/
-		public bool? noMelee;
 		/**<summary>NoUseGraphic</summary>*/
 		public bool? noUseGraphic;
 		/**<summary>Scale</summary>*/
