@@ -22,7 +22,7 @@ Terraria Item Modifier may optionally switch to ini files in the future.
 * **Built For:** Terraria 1.3.5.3 <sup>(Should run with other versions)</sup>
 
 ## Requirements for Running
-* .NET Framwork 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
+* .NET Framework 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
 * Windows 7 or later
 * Terraria for PC
 
