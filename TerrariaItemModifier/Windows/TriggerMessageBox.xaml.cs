@@ -28,6 +28,8 @@ namespace TerrariaItemModifier.Windows {
 		private int minWidth;
 		/**<summary>The message box buttons setup.</summary>*/
 		private MessageBoxButton buttons;
+		/**<summary>The icon of the message.</summary>*/
+		private MessageIcon icon;
 
 		#endregion
 		//========= CONSTRUCTORS =========
@@ -37,24 +39,21 @@ namespace TerrariaItemModifier.Windows {
 		public TriggerMessageBox(MessageIcon icon, string title, string message, MessageBoxButton buttons, string buttonName1 = null, string buttonName2 = null, string buttonName3 = null) {
 			InitializeComponent();
 			this.buttons = buttons;
+			this.icon = icon;
 			this.minWidth = 280;
 
 			#region Load Message Icons
 			switch (icon) {
 			case MessageIcon.Info:
-				SystemSounds.Asterisk.Play();
 				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/InfoIcon.png"));
 				break;
 			case MessageIcon.Question:
-				SystemSounds.Asterisk.Play();
 				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/QuestionIcon.png"));
 				break;
 			case MessageIcon.Warning:
-				SystemSounds.Exclamation.Play();
 				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/WarningIcon.png"));
 				break;
 			case MessageIcon.Error:
-				SystemSounds.Hand.Play();
 				this.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/Icons/ErrorIcon.png"));
 				break;
 			}
@@ -141,6 +140,15 @@ namespace TerrariaItemModifier.Windows {
 		private void OnWindowLoaded(object sender, RoutedEventArgs e) {
 			this.Width = Math.Max(minWidth, textBlockMessage.ActualWidth + 60);
 			this.Height += textBlockMessage.ActualHeight - 16;
+
+			#region Load Message Sounds
+			switch (icon) {
+			case MessageIcon.Info: SystemSounds.Asterisk.Play(); break;
+			case MessageIcon.Question: SystemSounds.Asterisk.Play(); break;
+			case MessageIcon.Warning: SystemSounds.Exclamation.Play(); break;
+			case MessageIcon.Error: SystemSounds.Hand.Play(); break;
+			}
+			#endregion
 		}
 		private void OnButtonClicked(object sender, RoutedEventArgs e) {
 			result = (MessageBoxResult)((Button)sender).Tag;

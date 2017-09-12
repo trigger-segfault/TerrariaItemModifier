@@ -74,6 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TerrariaLocator.cs" />
     <Compile Include="Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -158,12 +159,6 @@
     <Resource Include="Resources\Icons\Empty.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ItemModification\ItemModification.csproj">
-      <Project>{e0bd6e3e-d7db-4321-b772-198e97e6d26b}</Project>
-      <Name>TerrariaItemModification</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons\Browse.png" />
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="App.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Background.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\About.png" />
@@ -195,6 +187,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\VariableList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ItemModification\ItemModification.csproj">
+      <Project>{e0bd6e3e-d7db-4321-b772-198e97e6d26b}</Project>
+      <Name>ItemModification</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

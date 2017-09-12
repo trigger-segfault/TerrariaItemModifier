@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaItemModifier"
         mc:Ignorable="d"
-        Title="Terraria Item Modifier" Height="330" Width="464" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
+        Title="Terraria Item Modifier" Height="330" Width="480" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
     <Window.Resources>
         <FontFamily x:Key="Andy">pack://application:,,,/Resources/#Andy</FontFamily>
     </Window.Resources>
@@ -52,12 +52,12 @@
                         <Image Source="Resources/Icons/Credits.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator/>
                 <MenuItem Header="View on GitHub" Click="OnViewOnGitHub">
                     <MenuItem.Icon>
                         <Image Source="Resources/Icons/GitHub.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <Separator/>
                 <MenuItem Header="Variable List" Click="OnVariableList">
                     <MenuItem.Icon>
                         <Image Source="Resources/Icons/VariableList.png"/>
@@ -65,46 +65,46 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-        <Grid>
-            <Grid.Background>
+        <Grid Background="#FFF0F0F0">
+            <!--<Grid.Background>
                 <ImageBrush ImageSource="Resources/Background.png"/>
-            </Grid.Background>
-            <Button x:Name="buttonPatch" Content="Patch" HorizontalAlignment="Center" Margin="0,0,220,10" VerticalAlignment="Bottom" Width="100" Click="OnPatch" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" IsTabStop="False" Focusable="False" ToolTip="Patch current Terraria executable" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="#FF48E67A" Offset="0"/>
-                        <GradientStop Color="#FF168B3B" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-            <Button x:Name="buttonRestorePatch" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="100" Click="OnRestoreAndPatch" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Restore backup and then patch executable" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="#FF48E67A" Offset="0"/>
-                        <GradientStop Color="#FF168B3B" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
-                <TextBlock x:Name="textBox" TextWrapping="Wrap" TextAlignment="Center" Text="Restore&#xD;&#xA;&amp; Patch" IsHitTestVisible="False"/>
-            </Button>
-            <Button x:Name="buttonRestore" Content="Restore" HorizontalAlignment="Center" Margin="220,0,0,10" VerticalAlignment="Bottom" Width="100" Click="OnRestore" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Restore executable from backup" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
-                <Button.Background>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                        <GradientStop Color="#FF48E67A" Offset="0"/>
-                        <GradientStop Color="#FF168B3B" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-            <Rectangle Fill="#AAFFFFFF" HorizontalAlignment="Left" Height="6" Margin="17,13,0,0" VerticalAlignment="Top" Width="102" StrokeThickness="0"/>
-            <GroupBox Header="Terraria's Location" Height="60" Margin="10,10,10,0" VerticalAlignment="Top" BorderBrush="#FF1B8040" Background="#AAFFFFFF">
+            </Grid.Background>-->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom">
+                <Button x:Name="buttonPatch" Content="Patch" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Bottom" Width="90" Click="OnPatch" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" IsTabStop="False" Focusable="False" ToolTip="Patch current Terraria executable" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FF48E67A" Offset="0"/>
+                            <GradientStop Color="#FF168B3B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="buttonRestorePatch" HorizontalAlignment="Center" Margin="5,0,5,0" VerticalAlignment="Bottom" Width="90" Click="OnRestoreAndPatch" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Restore backup and then patch executable" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FF48E67A" Offset="0"/>
+                            <GradientStop Color="#FF168B3B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Restore&#xD;&#xA;&amp; Patch" IsHitTestVisible="False"/>
+                </Button>
+                <Button x:Name="buttonRestore" Content="Restore" HorizontalAlignment="Center" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="90" Click="OnRestore" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Restore executable from backup" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FF48E67A" Offset="0"/>
+                            <GradientStop Color="#FF168B3B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+            <GroupBox Header="Terraria's Location" Height="60" Margin="10,10,10,0" VerticalAlignment="Top" BorderBrush="#FFA0A0A0">
                 <Grid>
-                    <TextBox x:Name="textBoxExe" Height="23" Margin="6,8,37,0" VerticalAlignment="Top" IsHitTestVisible="True" IsTabStop="False" AllowDrop="False" IsReadOnly="True" ScrollViewer.CanContentScroll="True"/>
+                    <TextBox x:Name="textBoxExe" Height="23" Margin="6,8,37,0" VerticalAlignment="Top" IsHitTestVisible="True" IsTabStop="False" AllowDrop="False" ScrollViewer.CanContentScroll="True" TextChanged="OnExeChanged"/>
                     <Button x:Name="buttonExeBrowse" HorizontalAlignment="Right" Margin="0,8,6,0" VerticalAlignment="Top" Width="22" Height="22" Padding="0" Grid.IsSharedSizeScope="True" ToolTip="Locate Terraria executable" Click="OnExeBrowse" Focusable="False" IsTabStop="False">
                         <Image x:Name="image" Height="16" Width="16" Source="Resources/Icons/Browse.png" IsHitTestVisible="False"/>
                     </Button>
                 </Grid>
             </GroupBox>
-            <Rectangle Fill="#AAFFFFFF" HorizontalAlignment="Left" Height="6" Margin="17,78,0,0" VerticalAlignment="Top" Width="68" StrokeThickness="0"/>
-            <GroupBox Header="Information" Margin="10,75,10,80" BorderBrush="#FF1B8040" Background="#AAFFFFFF">
+            <GroupBox Header="Information" Margin="10,75,10,80" BorderBrush="#FFA0A0A0">
                 <Grid>
                     <TextBlock TextWrapping="WrapWithOverflow" Margin="5">
                         <Run Text="Modify almost any item variable by editing the "/><Run Text="ItemModifications.xml" TextDecorations="Underline" FontStyle="Italic"/><Run Text=" file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded."/><LineBreak/><LineBreak/><Run Text="This patch "/><Run Text="should" FontStyle="Italic"/><Run Text=" work with other patches and modifications."/>

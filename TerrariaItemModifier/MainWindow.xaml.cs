@@ -28,13 +28,6 @@ namespace TerrariaItemModifier {
 		//========== CONSTANTS ===========
 		#region Constants
 
-		/**<summary>The possibly paths to the Terraria executable.</summary>*/
-		private static readonly string[] PossibleTerrariaPaths = {
-			@"C:\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe",
-			@"C:\Program Files\Steam\steamapps\common\Terraria\Terraria.exe",
-			@"C:\Steam\steamapps\common\Terraria\Terraria.exe"
-		};
-
 		#endregion
 		//=========== MEMBERS ============
 		#region Members
@@ -48,6 +41,9 @@ namespace TerrariaItemModifier {
 			InitializeComponent();
 
 			LoadSettings();
+
+			// Disable drag/drop text in textboxes so you can scroll their contents easily
+			DataObject.AddCopyingHandler(textBoxExe, (sender, e) => { if (e.IsDragDrop) e.CancelCommand(); });
 		}
 
 		#endregion
@@ -56,14 +52,14 @@ namespace TerrariaItemModifier {
 
 		/**<summary>Loads the application settings.</summary>*/
 		private void LoadSettings() {
-			if (Settings.Default.ExePath == null || Settings.Default.ExePath == "") {
-				if (TryFindTerrariaPath())
-					SaveSettings();
+			Patcher.ExePath = Settings.Default.ExePath;
+			if (string.IsNullOrEmpty(Patcher.ExePath)) {
+				Patcher.ExePath = "";
+				if (!string.IsNullOrEmpty(TerrariaLocator.TerrariaPath)) {
+					Patcher.ExePath = TerrariaLocator.TerrariaPath;
+				}
 			}
-			else {
-				Patcher.ExePath = Settings.Default.ExePath;
-				textBoxExe.Text = Settings.Default.ExePath;
-			}
+			textBoxExe.Text = Patcher.ExePath;
 		}
 		/**<summary>Saves the application settings.</summary>*/
 		private void SaveSettings() {
@@ -74,18 +70,7 @@ namespace TerrariaItemModifier {
 		#endregion
 		//=========== HELPERS ============
 		#region Helpers
-
-		/**<summary>Tries to find one of the default paths to Terraria.</summary>*/
-		private bool TryFindTerrariaPath() {
-			foreach (string path in PossibleTerrariaPaths) {
-				if (IOFile.Exists(path)) {
-					Patcher.ExePath = path;
-					textBoxExe.Text = path;
-					return true;
-				}
-			}
-			return false;
-		}
+		
 		/**<summary>Saves the xml to be modified for use in Terraria.</summary>*/
 		private void SaveItemModificationsXml() {
 			try {
@@ -152,24 +137,6 @@ namespace TerrariaItemModifier {
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to patch the current Terraria executable?", "Patch Terraria", MessageBoxButton.YesNo);
 			if (result == MessageBoxResult.No)
 				return;
-			if (!IOFile.Exists(Patcher.BackupPath)) {
-				result = TriggerMessageBox.Show(this, MessageIcon.Question, "Would you like to create a backup of the current Terraria executable?", "Backup Terraria", MessageBoxButton.YesNoCancel);
-
-				if (result == MessageBoxResult.Yes) {
-					try {
-						IOFile.Copy(Patcher.ExePath, Patcher.BackupPath);
-					}
-					catch (Exception ex) {
-						result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while trying to backup Terraria! Would you like to see the error?", "Backup Error", MessageBoxButton.YesNo);
-						if (result == MessageBoxResult.Yes)
-							ErrorMessageBox.Show(ex, true);
-						return;
-					}
-				}
-				else if (result == MessageBoxResult.Cancel) {
-					return;
-				}
-			}
 			try {
 				Patcher.Patch();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully patched!", "Terraria Patched");
@@ -187,17 +154,17 @@ namespace TerrariaItemModifier {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
-			if (IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
-				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
-				if (result == MessageBoxResult.No)
-					return;
-			}
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore the current Terraria executable to its backup?", "Restore Terraria", MessageBoxButton.YesNo);
 			if (result == MessageBoxResult.No)
 				return;
 			if (!IOFile.Exists(Patcher.BackupPath)) {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
 				return;
+			}
+			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.No)
+					return;
 			}
 			try {
 				Patcher.Restore();
@@ -213,11 +180,6 @@ namespace TerrariaItemModifier {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
-			if (IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
-				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
-				if (result == MessageBoxResult.No)
-					return;
-			}
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore Terraria from its backup and then patch it?", "Patch & Restore Terraria", MessageBoxButton.YesNo);
 			if (result == MessageBoxResult.No)
 				return;
@@ -225,9 +187,10 @@ namespace TerrariaItemModifier {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
 				return;
 			}
-			else if (!IOFile.Exists(Patcher.ExePath)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria executable!", "Missing Exe");
-				return;
+			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.No)
+					return;
 			}
 			try {
 				Patcher.Restore();
@@ -251,6 +214,11 @@ namespace TerrariaItemModifier {
 
 			SaveItemModificationsXml();
 		}
+
+		#endregion
+		//--------------------------------
+		#region Settings
+
 		private void OnExeBrowse(object sender, RoutedEventArgs e) {
 			OpenFileDialog fileDialog = new OpenFileDialog();
 
@@ -260,15 +228,19 @@ namespace TerrariaItemModifier {
 			fileDialog.Filter = "Executables (*.exe)|*.exe|All Files (*.*)|*.*";
 			fileDialog.FilterIndex = 0;
 			fileDialog.CheckFileExists = true;
-			if (Patcher.ExePath != "")
-				fileDialog.InitialDirectory = Patcher.ExeDirectory;
-
+			try {
+				fileDialog.InitialDirectory = IOPath.GetFullPath(Patcher.ExeDirectory);
+			}
+			catch { }
 			var result = fileDialog.ShowDialog(this);
 			if (result.HasValue && result.Value) {
 				Patcher.ExePath = fileDialog.FileName;
 				textBoxExe.Text = fileDialog.FileName;
 				SaveSettings();
 			}
+		}
+		private void OnExeChanged(object sender, TextChangedEventArgs e) {
+			Patcher.ExePath = textBoxExe.Text;
 		}
 
 		#endregion

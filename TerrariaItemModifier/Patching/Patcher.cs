@@ -80,10 +80,6 @@ namespace TerrariaItemModifier.Patching {
 				Instruction.Create(OpCodes.Call, onSetItemDefaults),
 				Instruction.Create(OpCodes.Ret)
 			});
-			/*IL.MethodAppend(setDefaults, setDefaults.Body.Instructions.Count - 1, 0, new[] {
-				Instruction.Create(OpCodes.Ldarg_0),
-				Instruction.Create(OpCodes.Call, onSetItemDefaults)
-			});*/
 
 			// Save the modifications
 			AsmDefinition.Write(ExePath);
@@ -100,8 +96,8 @@ namespace TerrariaItemModifier.Patching {
 					File.Copy(source, destination, true);
 				}
 			}
-			catch (Exception) {
-				throw new IOException("Error while trying to copy over required files.");
+			catch (Exception ex) {
+				throw new IOException("Error while trying to copy over required files.", ex);
 			}
 		}
 
