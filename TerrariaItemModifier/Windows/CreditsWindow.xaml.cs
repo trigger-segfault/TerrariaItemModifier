@@ -23,10 +23,6 @@ namespace TerrariaItemModifier.Windows {
 			Process.Start((sender as Hyperlink).NavigateUri.ToString());
 		}
 
-		private void OnCloseClicked(object sender, RoutedEventArgs e) {
-			DialogResult = true;
-		}
-
 		#endregion
 		//=========== SHOWING ============
 		#region Showing

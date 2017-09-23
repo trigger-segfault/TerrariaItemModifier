@@ -14,13 +14,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TerrariaItemModifier.Patching;
 using TerrariaItemModifier.Windows;
-using IOPath = System.IO.Path;
-using IOFile = System.IO.File;
-using IODirectory = System.IO.Directory;
+using System.IO;
+using Path = System.IO.Path;
 using TerrariaItemModifier.Properties;
 using Microsoft.Win32;
 using System.Xml;
 using System.Diagnostics;
+using TerrariaItemModifier.Util;
 
 namespace TerrariaItemModifier {
 	/**<summary>The main window running Terraria Item Modifier.</summary>*/
@@ -74,9 +74,12 @@ namespace TerrariaItemModifier {
 		/**<summary>Saves the xml to be modified for use in Terraria.</summary>*/
 		private void SaveItemModificationsXml() {
 			try {
-				string configPath = IOPath.Combine(Patcher.ExeDirectory, ItemModifier.ConfigName);
+				string configPath = Path.Combine(Patcher.ExeDirectory, ItemModifier.ConfigName);
+				if (File.Exists(configPath))
+					return;
+
 				// Only create one, don't overwrite a user's existing modifications
-				if (!IOFile.Exists(configPath)) {
+				if (!File.Exists(configPath)) {
 					XmlDocument doc = new XmlDocument();
 					doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
 
@@ -108,7 +111,7 @@ namespace TerrariaItemModifier {
 				return false;
 			}
 			try {
-				IOPath.GetDirectoryName(Patcher.ExePath);
+				Path.GetDirectoryName(Patcher.ExePath);
 				return true;
 			}
 			catch (ArgumentException) {
@@ -130,7 +133,7 @@ namespace TerrariaItemModifier {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
-			if (!IOFile.Exists(Patcher.ExePath)) {
+			if (!File.Exists(Patcher.ExePath)) {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria executable!", "Missing Exe");
 				return;
 			}
@@ -139,7 +142,11 @@ namespace TerrariaItemModifier {
 				return;
 			try {
 				Patcher.Patch();
+				SaveItemModificationsXml();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully patched!", "Terraria Patched");
+			}
+			catch (AlreadyPatchedException) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "This executable has already been patched by Item Modifier! Use Restore & Patch instead.", "Already Patched");
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while patching Terraria! Would you like to see the error?", "Patch Error", MessageBoxButton.YesNo);
@@ -147,27 +154,36 @@ namespace TerrariaItemModifier {
 					ErrorMessageBox.Show(ex, true);
 				return;
 			}
-
-			SaveItemModificationsXml();
 		}
 		private void OnRestore(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
+			bool cleanup = false;
 			if (!ValidPathTest())
 				return;
-			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore the current Terraria executable to its backup?", "Restore Terraria", MessageBoxButton.YesNo);
-			if (result == MessageBoxResult.No)
-				return;
-			if (!IOFile.Exists(Patcher.BackupPath)) {
+			if (!File.Exists(Patcher.BackupPath)) {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
 				return;
 			}
-			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Would you like to restore the current Terraria executable to its backup and cleanup the required files or just restore the backup?", "Restore Terraria", MessageBoxButton.YesNoCancel, "Cleanup & Restore", "Restore Only");
+			if (result == MessageBoxResult.Cancel)
+				return;
+			cleanup = result == MessageBoxResult.Yes;
+			if (File.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
 				if (result == MessageBoxResult.No)
 					return;
 			}
 			try {
-				Patcher.Restore();
+				Patcher.Restore(cleanup);
+				// Clean up directory and remove config file
+				if (cleanup) {
+					string configPath = Path.Combine(Patcher.ExeDirectory, ItemModifier.ConfigName);
+					string logPath = Path.Combine(Patcher.ExeDirectory, ErrorLogger.LogName);
+					if (File.Exists(configPath))
+						File.Delete(configPath);
+					if (File.Exists(logPath))
+						File.Delete(logPath);
+				}
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully restored!", "Terraria Restored");
 			}
 			catch (Exception ex) {
@@ -180,20 +196,20 @@ namespace TerrariaItemModifier {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
-			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore Terraria from its backup and then patch it?", "Patch & Restore Terraria", MessageBoxButton.YesNo);
-			if (result == MessageBoxResult.No)
-				return;
-			if (!IOFile.Exists(Patcher.BackupPath)) {
+			if (!File.Exists(Patcher.BackupPath)) {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
 				return;
 			}
-			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore Terraria from its backup and then patch it?", "Patch & Restore Terraria", MessageBoxButton.YesNo);
+			if (result == MessageBoxResult.No)
+				return;
+			if (File.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
 				if (result == MessageBoxResult.No)
 					return;
 			}
 			try {
-				Patcher.Restore();
+				Patcher.Restore(false);
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while restoring Terraria! Would you like to see the error?", "Restore Error", MessageBoxButton.YesNo);
@@ -204,6 +220,9 @@ namespace TerrariaItemModifier {
 			try {
 				Patcher.Patch();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully restored and patched!", "Terraria Repatched");
+			}
+			catch (AlreadyPatchedException) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "The backup executable has already been patched by Item Modifier!", "Already Patched");
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while patching Terraria! Would you like to see the error?", "Patch Error", MessageBoxButton.YesNo);
@@ -229,7 +248,7 @@ namespace TerrariaItemModifier {
 			fileDialog.FilterIndex = 0;
 			fileDialog.CheckFileExists = true;
 			try {
-				fileDialog.InitialDirectory = IOPath.GetFullPath(Patcher.ExeDirectory);
+				fileDialog.InitialDirectory = Path.GetFullPath(Patcher.ExeDirectory);
 			}
 			catch { }
 			var result = fileDialog.ShowDialog(this);
@@ -249,7 +268,7 @@ namespace TerrariaItemModifier {
 
 		private void OnLaunchTerraria(object sender, RoutedEventArgs e) {
 			try {
-				if (IOFile.Exists(Patcher.ExePath))
+				if (File.Exists(Patcher.ExePath))
 					Process.Start(Patcher.ExePath);
 				else
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria executable! Cannot launch Terraria.", "Missing Executable");
@@ -260,7 +279,7 @@ namespace TerrariaItemModifier {
 		}
 		private void OnOpenTerrariaFolder(object sender, RoutedEventArgs e) {
 			try {
-				if (IODirectory.Exists(Patcher.ExeDirectory))
+				if (Directory.Exists(Patcher.ExeDirectory))
 					Process.Start(Patcher.ExeDirectory);
 				else
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria folder! Cannot open folder.", "Missing Folder");

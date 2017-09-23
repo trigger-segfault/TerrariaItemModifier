@@ -25,13 +25,23 @@ namespace TerrariaItemModifier {
 			//=========== MEMBERS ============
 			#region Members
 
-			public static ConstructorInfo ctor_ItemToolTip;
-			public static ConstructorInfo ctor_LocalizedText;
+			/**<summary>private ItemTooltip()</summary>*/
+			public static ConstructorInfo ItemToolTip_ctor;
 
-			public static FieldInfo _itemNameCache_Lang;
-			public static FieldInfo _itemTooltipCache_Lang;
-			public static FieldInfo _text_ItemTooltip;
-			public static FieldInfo _lastCulture_ItemTooltip;
+			/**<summary>internal LocalizedText(string key, string text)</summary>*/
+			public static ConstructorInfo LocalizedText_ctor;
+
+			/**<summary>private static LocalizedText[] Lang._itemNameCache</summary>*/
+			public static FieldInfo Lang_itemNameCache;
+			/**<summary>private static ItemTooltip[] Lang._itemTooltipCache</summary>*/
+			public static FieldInfo Lang_itemTooltipCache;
+			/**<summary>private LocalizedText ItemTooltip._text</summary>*/
+			public static FieldInfo ItemTooltip_text;
+			/**<summary>private GameCulture ItemTooltip._lastCulture</summary>*/
+			public static FieldInfo ItemTooltip_lastCulture;
+
+			/**<summary>internal void LocalizedText.SetValue(string text)</summary>*/
+			public static MethodInfo LocalizedText_SetValue;
 
 			#endregion
 			//========= CONSTRUCTORS =========
@@ -39,13 +49,15 @@ namespace TerrariaItemModifier {
 
 			/**<summary>Aquire all of the reflection infos ahead of time to reduce reflection slowdown.</summary>*/
 			static TerrariaReflection() {
-				ctor_ItemToolTip		 = typeof(ItemTooltip).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
-				ctor_LocalizedText		 = typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+				ItemToolTip_ctor			= typeof(ItemTooltip).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+				LocalizedText_ctor			= typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
 
-				_itemNameCache_Lang		 = typeof(Lang).GetField("_itemNameCache", BindingFlags.NonPublic | BindingFlags.Static);
-				_itemTooltipCache_Lang	 = typeof(Lang).GetField("_itemTooltipCache", BindingFlags.NonPublic | BindingFlags.Static);
-				_text_ItemTooltip		 = typeof(ItemTooltip).GetField("_text", BindingFlags.NonPublic | BindingFlags.Instance);
-				_lastCulture_ItemTooltip = typeof(ItemTooltip).GetField("_lastCulture", BindingFlags.NonPublic | BindingFlags.Instance);
+				Lang_itemNameCache			= typeof(Lang).GetField("_itemNameCache", BindingFlags.NonPublic | BindingFlags.Static);
+				Lang_itemTooltipCache       = typeof(Lang).GetField("_itemTooltipCache", BindingFlags.NonPublic | BindingFlags.Static);
+				ItemTooltip_text			= typeof(ItemTooltip).GetField("_text", BindingFlags.NonPublic | BindingFlags.Instance);
+				ItemTooltip_lastCulture     = typeof(ItemTooltip).GetField("_lastCulture", BindingFlags.NonPublic | BindingFlags.Instance);
+
+				LocalizedText_SetValue		= typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance);
 
 				// Hooray for reflection!
 			}
@@ -68,7 +80,19 @@ namespace TerrariaItemModifier {
 
 		/**<summary>The items to be modified.</summary>*/
 		private static Dictionary<int, ItemModification> ItemMods = new Dictionary<int, ItemModification>();
-		
+
+		#endregion
+		//========= CONSTRUCTORS =========
+		#region Constructors
+
+		/**<summary>Change a main static field once and not every time we load modifications.</summary>*/
+		static ItemModifier() {
+			// Make NPCs releasable (catchable does not seem to affect catching NPCs with bug nets)
+			for (int i = 0; i < Main.npcCatchable.Length; i++) {
+				Main.npcCatchable[i] = true;
+			}
+		}
+
 		#endregion
 		//============ HOOKS =============
 		#region Hooks
@@ -80,16 +104,18 @@ namespace TerrariaItemModifier {
 
 				itemMod.ModifyItem(item);
 
-				if (ErrorLogger.IsOpen)
-					ErrorLogger.Close();
+				ErrorLogger.Close();
 			}
 		}
 		/**<summary>Called on Main.LoadPlayers to reload all of the modifications.</summary>*/
-		public static void OnSetupModifications() {
-			if (File.Exists(ConfigPath))
+		public static void OnLoadModifications() {
+			if (File.Exists(ConfigPath)) {
 				LoadModifications();
-			else
+				ReloadRecipeCraftedItems();
+			}
+			else {
 				SaveExampleModifications();
+			}
 		}
 
 		#endregion
@@ -99,10 +125,6 @@ namespace TerrariaItemModifier {
 		/**<summary>Loads or reloads the modifications xml doc.</summary>*/
 		private static void LoadModifications() {
 			try {
-				// Make NPCs releasable (catchable does not seem to affect catching NPCs with bug nets)
-				for (int i = 0; i < Main.npcCatchable.Length; i++) {
-					Main.npcCatchable[i] = true;
-				}
 
 				ItemMods.Clear();
 
@@ -153,8 +175,7 @@ namespace TerrariaItemModifier {
 				}
 			}
 			catch (Exception ex) {
-				if (!ErrorLogger.IsOpen)
-					ErrorLogger.Open();
+				ErrorLogger.Open();
 				ErrorLogger.WriteErrorHeader();
 				ErrorLogger.WriteLine("Error when parsing XML.");
 				ErrorLogger.WriteLine("Exception: ");
@@ -163,8 +184,7 @@ namespace TerrariaItemModifier {
 			}
 
 			// Close the error log if needed
-			if (ErrorLogger.IsOpen)
-				ErrorLogger.Close();
+			ErrorLogger.Close();
 		}
 		/**<summary>Saves an example modifications xml doc.</summary>*/
 		private static void SaveExampleModifications() {
@@ -200,35 +220,78 @@ namespace TerrariaItemModifier {
 		/**<summary>Sets the name of an item.</summary>*/
 		private static void SetItemName(int type, string name) {
 			// Access Lang's item name cache
-			LocalizedText[] _itemNameCache = (LocalizedText[])TerrariaReflection._itemNameCache_Lang.GetValue(null);
+			LocalizedText[] _itemNameCache = (LocalizedText[])TerrariaReflection.Lang_itemNameCache.GetValue(null);
+
+			// Get the cached localized text item name
+			LocalizedText locText = _itemNameCache[ItemID.FromNetId((short)type)];
+
+			// Set the localized text of the cached item name
+			TerrariaReflection.LocalizedText_SetValue.Invoke(locText, new object[] { name });
 
 			// Create a new LocalizedText
-			LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemName" + type.ToString(), name });
+			//LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemName" + type.ToString(), name });
 
 			// Assign the new LocalizedText to Lang's item name cache
-			_itemNameCache[ItemID.FromNetId((short)type)] = locText;
+			//_itemNameCache[ItemID.FromNetId((short)type)] = locText;
 
 			// Hooray for reflection!
 		}
 		/**<summary>Sets the name of an item.</summary>*/
 		private static void SetItemTooltip(int type, string tooltip) {
 			// Access Lang's item tooltip cache
-			ItemTooltip[] _itemTooltipCache = (ItemTooltip[])TerrariaReflection._itemTooltipCache_Lang.GetValue(null);
+			ItemTooltip[] _itemTooltipCache = (ItemTooltip[])TerrariaReflection.Lang_itemTooltipCache.GetValue(null);
+
+			// Get the cached item tooltip
+			ItemTooltip itemTooltip = _itemTooltipCache[ItemID.FromNetId((short)type)];
+			
+			// Tooltip has not been assigned. Let's assign a new one
+			if (itemTooltip == ItemTooltip.None) {
+				// Create a new item tooltip
+				itemTooltip = (ItemTooltip)TerrariaReflection.ItemToolTip_ctor.Invoke(new object[] { });
+
+				// Create the tooltip's new localized text
+				LocalizedText _text = (LocalizedText)TerrariaReflection.LocalizedText_ctor.Invoke(new object[] { "", tooltip });
+
+				// Assign the tooltip's new localized text
+				TerrariaReflection.ItemTooltip_text.SetValue(itemTooltip, _text);
+				
+				// Assign the new item tooltip to the cache
+				_itemTooltipCache[ItemID.FromNetId((short)type)] = itemTooltip;
+			}
+			else {
+				// Get the tooltip's localized text
+				LocalizedText _text = (LocalizedText)TerrariaReflection.ItemTooltip_text.GetValue(itemTooltip);
+
+				// Set the text of the tooltip's localized text
+				TerrariaReflection.LocalizedText_SetValue.Invoke(_text, new object[] { tooltip });
+
+				// Set it so that the tooltip will be revalidated the first time it's needed.
+				TerrariaReflection.ItemTooltip_lastCulture.SetValue(itemTooltip, null);
+			}
+
+
 
 			// Create a new ItemTooltip
-			ItemTooltip itemTooltip = (ItemTooltip)TerrariaReflection.ctor_ItemToolTip.Invoke(new object[] {});
+			/*ItemTooltip itemTooltip = (ItemTooltip)TerrariaReflection.ctor_ItemToolTip.Invoke(new object[] {});
 			// Create a new LocalizedText
 			LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemTooltip" + type.ToString(), tooltip });
 
-			// Set the text of the tooltip
 			TerrariaReflection._text_ItemTooltip.SetValue(itemTooltip, locText);
-			// Set it so that the tooltip will be revalidated the first time it's needed.
-			TerrariaReflection._lastCulture_ItemTooltip.SetValue(itemTooltip, null);
 
 			// Assign the new ItemTooltip to Lang's item tooltip cache
-			_itemTooltipCache[ItemID.FromNetId((short)type)] = itemTooltip;
+			_itemTooltipCache[ItemID.FromNetId((short)type)] = itemTooltip;*/
 
 			// Hooray for reflection!
+		}
+		/**<summary>Modify Recipe createItems since they are setup before Item Modifier is loaded.</summary>*/
+		private static void ReloadRecipeCraftedItems() {
+			foreach (Recipe recipe in Main.recipe) {
+				// Save the stack count because it will be reset with SetDefaults
+				int stack = recipe.createItem.stack;
+				recipe.createItem.SetDefaults(recipe.createItem.type, false);
+				// Change the stack back to what it was
+				recipe.createItem.stack = stack;
+			}
 		}
 
 		#endregion

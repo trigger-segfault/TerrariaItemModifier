@@ -9,9 +9,11 @@ namespace TerrariaItemModifier {
 	public static class ErrorLogger {
 		//========== CONSTANTS ===========
 		#region Constants
-			
-		/**<summary>The path of the error log.</summary>*/
-		public static readonly string LogPath = Path.Combine(Environment.CurrentDirectory, "ItemModificationErrorLog.txt");
+
+		/**<summary>The name of the error log file.</summary>*/
+		public static readonly string LogName = "ItemModificationErrorLog.txt";
+		/**<summary>The path of the error log file.</summary>*/
+		public static readonly string LogPath = Path.Combine(Environment.CurrentDirectory, LogName);
 
 		#endregion
 		//=========== MEMBERS ============
@@ -31,11 +33,12 @@ namespace TerrariaItemModifier {
 
 		/**<summary>Opens the error log file.</summary>*/
 		public static void Open() {
-			Close();
-			try {
-				writer = new StreamWriter(LogPath, true);
+			if (writer != null) {
+				try {
+					writer = new StreamWriter(LogPath, true);
+				}
+				catch { }
 			}
-			catch { }
 		}
 		/**<summary>Closes the error log file.</summary>*/
 		public static void Close() {
@@ -71,7 +74,18 @@ namespace TerrariaItemModifier {
 				writer.WriteLine("Time: " + DateTime.Now.ToString());
 			}
 		}
-		
+		/**<summary>Writes an exception.</summary>*/
+		public static void WriteException(Exception ex) {
+			bool wasOpen = IsOpen;
+			Open();
+			WriteErrorHeader();
+			WriteLine(ex.Message);
+			WriteLine();
+			WriteLine(ex.ToString());
+			if (!wasOpen)
+				Close();
+		}
+
 		#endregion
 	}
 }

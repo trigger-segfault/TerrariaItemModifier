@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaItemModifier"
         mc:Ignorable="d"
-        Title="Terraria Item Modifier" Height="330" Width="480" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
+        Title="Terraria Item Modifier" Background="#FFF0F0F0" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <FontFamily x:Key="Andy">pack://application:,,,/Resources/#Andy</FontFamily>
     </Window.Resources>
@@ -65,7 +65,7 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-        <Grid Background="#FFF0F0F0">
+        <Grid Width="470" Height="275">
             <!--<Grid.Background>
                 <ImageBrush ImageSource="Resources/Background.png"/>
             </Grid.Background>-->
@@ -98,8 +98,8 @@
             </StackPanel>
             <GroupBox Header="Terraria's Location" Height="60" Margin="10,10,10,0" VerticalAlignment="Top" BorderBrush="#FFA0A0A0">
                 <Grid>
-                    <TextBox x:Name="textBoxExe" Height="23" Margin="6,8,37,0" VerticalAlignment="Top" IsHitTestVisible="True" IsTabStop="False" AllowDrop="False" ScrollViewer.CanContentScroll="True" TextChanged="OnExeChanged"/>
-                    <Button x:Name="buttonExeBrowse" HorizontalAlignment="Right" Margin="0,8,6,0" VerticalAlignment="Top" Width="22" Height="22" Padding="0" Grid.IsSharedSizeScope="True" ToolTip="Locate Terraria executable" Click="OnExeBrowse" Focusable="False" IsTabStop="False">
+                    <TextBox x:Name="textBoxExe" Height="23" Margin="6,8,38,0" VerticalAlignment="Top" IsHitTestVisible="True" IsTabStop="False" AllowDrop="False" ScrollViewer.CanContentScroll="True" TextChanged="OnExeChanged"/>
+                    <Button x:Name="buttonExeBrowse" HorizontalAlignment="Right" Margin="0,8,6,0" VerticalAlignment="Top" Width="23" Height="23" Padding="0" Grid.IsSharedSizeScope="True" ToolTip="Locate Terraria executable" Click="OnExeBrowse" Focusable="False" IsTabStop="False">
                         <Image x:Name="image" Height="16" Width="16" Source="Resources/Icons/Browse.png" IsHitTestVisible="False"/>
                     </Button>
                 </Grid>

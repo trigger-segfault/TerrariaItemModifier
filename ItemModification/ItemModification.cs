@@ -107,8 +107,7 @@ namespace TerrariaItemModifier {
 				}
 				catch (Exception ex) {
 					if (!loggedError) {
-						if (!ErrorLogger.IsOpen)
-							ErrorLogger.Open();
+						ErrorLogger.Open();
 						ErrorLogger.WriteErrorHeader();
 						ErrorLogger.WriteLine("There were errors when modifying ItemID: " + ID.ToString() + ".");
 						ErrorLogger.WriteLine();
@@ -151,7 +150,7 @@ namespace TerrariaItemModifier {
 		private Color ParseColor(string s) {
 			string[] channels = s.Split(',');
 			if (channels.Length != 3)
-				throw new FormatException("Incorrect amount of commas.");
+				throw new FormatException("Incorrect amount of commas in color.");
 
 			byte r, g, b;
 			if (!byte.TryParse(channels[0], out r)) throw new ArgumentOutOfRangeException("R channel not between 0 and 255.");

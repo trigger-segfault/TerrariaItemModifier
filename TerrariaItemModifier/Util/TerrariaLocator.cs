@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
-namespace TerrariaItemModifier {
+namespace TerrariaItemModifier.Util {
 	/**<summary>Finds the Terraria Content folder.</summary>*/
 	public static class TerrariaLocator {
 		//=========== MEMBERS ============
