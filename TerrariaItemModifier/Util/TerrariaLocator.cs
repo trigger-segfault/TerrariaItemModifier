@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.Win32;
 
 namespace TerrariaItemModifier.Util {
@@ -14,6 +15,8 @@ namespace TerrariaItemModifier.Util {
 
 		/**<summary>The located or empty Terraria executable path.</summary>*/
 		public static readonly string TerrariaPath;
+		/**<summary>The path to Terra Launcher's configuration file.</summary>*/
+		public static readonly string TerraLauncherConfigPath;
 
 		#endregion
 		//========= CONSTRUCTORS =========
@@ -22,19 +25,98 @@ namespace TerrariaItemModifier.Util {
 		/**<summary>Start looking for the Terraria executable.</summary>*/
 		static TerrariaLocator() {
 			TerrariaPath = FindTerrariaPath();
+			TerraLauncherConfigPath = FindConfigPath();
+		}
+
+		#endregion
+		//========== SAVE PATHS ==========
+		#region Save Paths
+
+		/**<summary>Reads the specified executable's selected save directory from Terra Launcher's config.</summary>*/
+		public static string FindTerraLauncherSaveDirectory(string exePath) {
+			string arguments = "";
+			if (!string.IsNullOrWhiteSpace(TerraLauncherConfigPath)) {
+				string oldCurrentDirectory = Directory.GetCurrentDirectory();
+				try {
+					// Set the current directory for relative paths
+					Directory.SetCurrentDirectory(Path.GetDirectoryName(TerraLauncherConfigPath));
+
+					exePath = Path.GetFullPath(exePath).ToLower();
+					
+					XmlDocument doc = new XmlDocument();
+					doc.Load(TerraLauncherConfigPath);
+
+					// Check if the user disable Trigger Tool Integration
+					bool boolValue;
+					XmlNode integration = doc.SelectSingleNode("TerraLauncher/Integration");
+					if (integration != null && bool.TryParse(integration.InnerText, out boolValue) && boolValue) {
+						XmlNode gamesNode = doc.SelectSingleNode("TerraLauncher/Games");
+						if (gamesNode != null) {
+							string result = ReadConfigFolder(exePath, gamesNode);
+							if (!string.IsNullOrWhiteSpace(result))
+								arguments = "-savedirectory \"" + result + "\"";
+						}
+					}
+				}
+				catch { }
+				// Set the current directory back
+				Directory.SetCurrentDirectory(oldCurrentDirectory);
+			}
+			return arguments;
+		}
+		/**<summary>Reads a Terra Launcher config folder and returns the save directory.</summary>*/
+		private static string ReadConfigFolder(string exePath, XmlNode folderNode) {
+			XmlNodeList nodeList = folderNode.SelectNodes("Folder");
+			foreach (XmlNode node in nodeList) {
+				string result = ReadConfigFolder(exePath, node);
+				if (!string.IsNullOrWhiteSpace(result))
+					return result;
+			}
+
+			nodeList = folderNode.SelectNodes("Game");
+
+			foreach (XmlNode node in folderNode) {
+				string result = null;
+				if (node.Name == "Folder") {
+					result = ReadConfigFolder(exePath, node);
+				}
+				else if (node.Name == "Game") {
+					XmlNode exeNode = node.SelectSingleNode("ExePath");
+					if (exeNode != null && Path.GetFullPath(exeNode.InnerText).ToLower() == exePath) {
+						XmlNode saveNode = node.SelectSingleNode("SaveDirectory");
+						if (saveNode != null && !string.IsNullOrWhiteSpace(saveNode.InnerText))
+							return saveNode.InnerText;
+					}
+				}
+				if (!string.IsNullOrWhiteSpace(result))
+					return result;
+			}
+			foreach (XmlNode node in nodeList) {
+				XmlNode exeNode = node.SelectSingleNode("ExePath");
+				if (exeNode != null && Path.GetFullPath(exeNode.InnerText).ToLower() == exePath) {
+					XmlNode saveNode = node.SelectSingleNode("SaveDirectory");
+					if (saveNode != null && !string.IsNullOrWhiteSpace(saveNode.InnerText))
+						return saveNode.InnerText;
+				}
+			}
+			return null;
 		}
 
 		#endregion
 		//=========== LOCATORS ===========
 		#region Locators
 
+		/**<summary>Starts looking for the Terra Launcher config path.</summary>*/
+		private static string FindConfigPath() {
+			return Registry.GetValue("HKEY_CURRENT_USER\\Software\\TriggersToolsGames\\TerraLauncher", "ConfigPath", null) as string;
+		}
 		/**<summary>Starts looking for the Terraria executable.</summary>*/
 		private static string FindTerrariaPath() {
 			try {
 				// Check the windows registry for steam installation path
 				string steamPath = Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam", "SteamPath", null) as string;
 				string result = SeekDirectory(steamPath);
-				if (result != null) {
+				if (!string.IsNullOrWhiteSpace(result)) {
 					return result;
 				}
 			}
@@ -50,7 +132,7 @@ namespace TerrariaItemModifier.Util {
 					else if (envVar.Key.ToLower().Contains("steam")) {
 						result = SeekDirectory(envVar.Value);
 					}
-					if (result != null) {
+					if (!string.IsNullOrWhiteSpace(result)) {
 						return result;
 					}
 				}

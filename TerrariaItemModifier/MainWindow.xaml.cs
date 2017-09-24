@@ -43,7 +43,10 @@ namespace TerrariaItemModifier {
 			LoadSettings();
 
 			// Disable drag/drop text in textboxes so you can scroll their contents easily
-			DataObject.AddCopyingHandler(textBoxExe, (sender, e) => { if (e.IsDragDrop) e.CancelCommand(); });
+			DataObject.AddCopyingHandler(textBoxExe, OnTextBoxCancelDrag);
+
+			// Remove quotes from "Copy Path" command on paste
+			DataObject.AddPastingHandler(textBoxExe, OnTextBoxQuotesPaste);
 		}
 
 		#endregion
@@ -129,6 +132,26 @@ namespace TerrariaItemModifier {
 		private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e) {
 			SaveSettings();
 		}
+
+		private void OnTextBoxCancelDrag(object sender, DataObjectCopyingEventArgs e) {
+			if (e.IsDragDrop)
+				e.CancelCommand();
+		}
+		private void OnTextBoxQuotesPaste(object sender, DataObjectPastingEventArgs e) {
+			var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+			if (!isText) return;
+
+			var text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
+			if (text.StartsWith("\"") || text.EndsWith("\"")) {
+				text = text.Trim('"');
+				Clipboard.SetText(text);
+			}
+		}
+
+		#endregion
+		//--------------------------------
+		#region Patching
+
 		private void OnPatch(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
 			if (!ValidPathTest())
@@ -268,10 +291,17 @@ namespace TerrariaItemModifier {
 
 		private void OnLaunchTerraria(object sender, RoutedEventArgs e) {
 			try {
-				if (File.Exists(Patcher.ExePath))
+				if (File.Exists(Patcher.ExePath)) {
 					Process.Start(Patcher.ExePath);
-				else
+					ProcessStartInfo start = new ProcessStartInfo();
+					start.FileName = Patcher.ExePath;
+					start.Arguments = TerrariaLocator.FindTerraLauncherSaveDirectory(Patcher.ExePath);
+					start.WorkingDirectory = Patcher.ExeDirectory;
+					Process.Start(start);
+				}
+				else {
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria executable! Cannot launch Terraria.", "Missing Executable");
+				}
 			}
 			catch {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "The current path to Terraria is invalid! Cannot launch Terraria.", "Invalid Path");
