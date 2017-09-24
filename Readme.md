@@ -12,12 +12,12 @@ Terraria Item Modifier may optionally switch to ini files in the future.
 
 ### [Wiki](https://github.com/trigger-death/TerrariaItemModifier/wiki) | [Credits](https://github.com/trigger-death/TerrariaItemModifier/wiki/Credits) | [Image Album](http://imgur.com/a/tRSoe)
 
-### [![Get Terraria Item Modifier](http://i.imgur.com/XBrcALb.png)](https://github.com/trigger-death/TerrariaItemModifier/releases/tag/1.0.3.0)
+### [![Get Terraria Item Modifier](http://i.imgur.com/XBrcALb.png)](https://github.com/trigger-death/TerrariaItemModifier/releases/tag/1.0.3.1)
 
 ## About
 
 * **Created By:** Robert Jordan
-* **Version:** 1.0.3.0
+* **Version:** 1.0.3.1
 * **Language:** C#, WPF
 * **Built For:** Terraria 1.3.5.3 <sup>(Should run with other versions)</sup>
 
