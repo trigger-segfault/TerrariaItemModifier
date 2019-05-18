@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaItemModifier"
         mc:Ignorable="d"
-        Title="Terraria Item Modifier" Background="#FFF0F0F0" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing" SizeToContent="WidthAndHeight">
+        Title="Terraria Item Modifier" Background="#FFF0F0F0" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing" SizeToContent="WidthAndHeight" PreviewMouseDown="OnPreviewMouseDown">
     <Window.Resources>
         <FontFamily x:Key="Andy">pack://application:,,,/Resources/#Andy</FontFamily>
     </Window.Resources>

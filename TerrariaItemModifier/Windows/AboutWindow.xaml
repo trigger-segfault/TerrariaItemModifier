@@ -2,9 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TerrariaItemModifier"
-        mc:Ignorable="d"
         Title="About Terraria Item Modifier" Background="#FFF0F0F0" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Icon="/Resources/Icons/About.png" SnapsToDevicePixels="True" UseLayoutRounding="True" SizeToContent="WidthAndHeight" Loaded="OnWindowLoaded">
 
     <Grid x:Name="clientArea" Width="384" Height="270">
@@ -33,7 +30,7 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Description" Margin="10,143,10,40" BorderBrush="#FFA9B1B6">
-            <TextBlock x:Name="textBlockDescription" TextWrapping="WrapWithOverflow" Text="Terraria Item Modifier is a patcher allowing for modification of almost any item variable with an xml file." Margin="4" Padding="4"/>
+            <TextBlock x:Name="textBlockDescription" TextWrapping="WrapWithOverflow" Text="Terraria Item Modifier is a patcher allowing for modification of almost any item variable with an xml file." Margin="4" Padding="4" VerticalAlignment="Top"/>
         </GroupBox>
 
         <Button Content="Close" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="80" IsDefault="True" IsCancel="True"/>

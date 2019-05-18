@@ -132,7 +132,10 @@ namespace TerrariaItemModifier {
 		private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e) {
 			SaveSettings();
 		}
-
+		private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+			// Make text boxes lose focus on click away
+			FocusManager.SetFocusedElement(this, this);
+		}
 		private void OnTextBoxCancelDrag(object sender, DataObjectCopyingEventArgs e) {
 			if (e.IsDragDrop)
 				e.CancelCommand();
