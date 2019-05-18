@@ -5,6 +5,7 @@
 [![Total Downloads](https://img.shields.io/github/downloads/trigger-death/TerrariaItemModifier/total.svg?style=flat)](https://github.com/trigger-death/TerrariaItemModifier/releases)
 [![Creation Date](https://img.shields.io/badge/created-august%202017-A642FF.svg?style=flat)](https://github.com/trigger-death/TerrariaItemModifier/commit/d335bf4936895744c8b9f91396ca2f5d19db81f2)
 [![Terraria Forums](https://img.shields.io/badge/terraria-forums-28A828.svg?style=flat)](https://forums.terraria.org/index.php?threads/61419/)
+[![Discord](https://img.shields.io/discord/436949335947870238.svg?style=flat&logo=discord&label=chat&colorB=7389DC&link=https://discord.gg/vB7jUbY)](https://discord.gg/vB7jUbY)
 
 Terraria Item Modifier is a patch that adds advanced item customization capabilities to Terraria through configuring an XML file. Modify almost any item variable by editing the *ItemModifications.xml* file in your Terraria folder. Some variables may require low level knowledge about Terraria. Settings are reloaded every time your player list is loaded.
 
